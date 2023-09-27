@@ -5,10 +5,6 @@ let boardSize = 3;
 let remainingShips = 2;
 
 
-function clearBoard() {
-	board = [];
-}
-
 function countHits() {
 	let hits = 0;
 	for (let i = 0; i < boardSize; i++) {
@@ -20,6 +16,8 @@ function countHits() {
 	}
 	return hits;
 }
+
+
 
 function getGuesses() {
 	let input = rs.question('Enter strike location (A1, A2, A3, B1, B2, B3, C1, C2, C3: ');
@@ -36,7 +34,7 @@ function getGuesses() {
 		console.log(`Hit! You have sunk a battleship! ${remainingShips - 1} ships remaining`);
 		remainingShips--;
 	}
-	else if (board[inputX][inputY] === 'H') {
+	else if (board[inputX][inputY] === 'H' || board[inputX][inputY] === 'X') {
 		console.log('You have already picked this location. Miss!');
 	}
 	else {
@@ -49,7 +47,6 @@ function getGuesses() {
 		console.log('You have sunk all the Battleships!')
 		let answer = rs.keyInYN('Play Again?')
 		if (answer) {
-			clearBoard();
 			startGame();
 		} else {
 			return console.log('Bye Loser!');
@@ -64,18 +61,14 @@ function getGuesses() {
 function translateToNumber(letter) {
 	letter = letter.toUpperCase();
 
-	switch (letter) {
-		case 'A': return 0;
-		case 'B': return 1;
-		case 'C': return 2;
-		default: return -1;
+	const alphabet = {
+		'A': 0,
+		'B': 1,
+		'C': 2,
 	}
 
-	// if (letter === 'A') return 0
-	// else if (letter === 'B') return 1
-	// else if (letter === 'C') return 2
-	// else return -1;
-	
+	return Object.keys(alphabet).includes(letter) ? alphabet[letter] : -1;
+
 }
 
 function randomShipPlacement () {
@@ -114,6 +107,9 @@ function startGame() {
 
 	console.log('Press any key to start the game.');
 	rs.keyInPause();
+
+	remainingShips = 2;
+	board = [];
 
 	createBoard();
 	randomShipPlacement();
